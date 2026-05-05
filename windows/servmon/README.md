@@ -290,7 +290,7 @@ If I go to `http://10.10.10.184/`, i can see that NVMS-1000 is running and it re
 Trying to guess the user and password didn't work.
 
 A google search reveals a directory traversal vulnerability related to NVMS 1000.
-![](attachments/Pasted%20image%2020260505185910.png)
+![](<attachments/{08E98797-AC05-4787-9689-54B1BD7709C3}.png>)
 It basically says I can request `/../../../../../../../../../../../../windows/win.ini` and get it.
 
 ![](<attachments/{08E98797-AC05-4787-9689-54B1BD7709C3}.png>)
