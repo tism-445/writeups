@@ -293,7 +293,7 @@ A google search reveals a directory traversal vulnerability related to NVMS 1000
 ![](attachments/Pasted%20image%2020260505185910.png)
 It basically says I can request `/../../../../../../../../../../../../windows/win.ini` and get it.
 
-![](attachments/%7B08E98797-AC05-4787-9689-54B1BD7709C3%7D.png)
+![](<attachments/{08E98797-AC05-4787-9689-54B1BD7709C3}.png>)
 
 ## Shell as nadine
 
