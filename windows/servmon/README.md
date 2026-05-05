@@ -290,10 +290,10 @@ If I go to `http://10.10.10.184/`, i can see that NVMS-1000 is running and it re
 Trying to guess the user and password didn't work.
 
 A google search reveals a directory traversal vulnerability related to NVMS 1000.
-![](<attachments/{08E98797-AC05-4787-9689-54B1BD7709C3}.png>)
+![](attachments/01_nvms_search.png)
 It basically says I can request `/../../../../../../../../../../../../windows/win.ini` and get it.
 
-![](<attachments/{08E98797-AC05-4787-9689-54B1BD7709C3}.png>)
+![](attachments/02_win_ini.png)
 
 ## Shell as nadine
 
@@ -304,7 +304,7 @@ We can check for the `Passwords.txt` file mentioned in the note
 http://10.129.30.98/..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FUsers/Nathan/Desktop/passwords.txt
 ```
 
-![](attachments/%7BA97B5C3B-6D85-48AF-8A75-0876205D9515%7D.png)
+![](attachments/03_passwords.png)
 
 ```
 1nsp3ctTh3Way2Mars!
@@ -376,7 +376,7 @@ allowed hosts = 127.0.0.1
 ```
 
 If I try to login I get 403 You're not allowed error
-![](attachments/%7BAD33A294-B4B9-45E4-B5B4-52F1774DB925%7D.png)
+![](attachments/04_nsclient_403.png)
 
 The nsclient.ini file reveals `allowed hosts` is set to `127.0.0.1`
 
@@ -411,20 +411,20 @@ scp nc.exe nadine@10.129.30.117:/temp
 
 Next, I will create an "external script". Go to Settings -> external scripts -> scripts 
 and press the "Add new" button.
-![](attachments/Pasted%20image%2020260504204245.png)
+![](attachments/05_external_script_add.png)
 
 Complete the fields as shown.
 
 After hitting add go to "Changes" and click `Save configuration`
-![](attachments/%7B4584246E-5AAB-4248-8A88-3268B5B043E8%7D.png)
+![](attachments/06_save_configuration.png)
 
 Next click "Control" and click `Reload`
-![](attachments/Pasted%20image%2020260504204530.png)
+![](attachments/07_reload.png)
 
 
 Then go to "Queries" and select the script 'pe'
 
-![](attachments/%7BAF4A018B-927A-4CCE-B603-62B8713463B4%7D.png)
+![](attachments/08_query_pe.png)
 
 
 
@@ -435,7 +435,7 @@ nc -lnvp 443
 
 
 And then run the script
-![](attachments/%7B3D1BE34A-2340-40D7-B9A0-13D8882623D8%7D.png)
+![](attachments/09_run_script.png)
 
 With the exploit successfully executed we get a reverse-shell as nt authority\system
 ```
